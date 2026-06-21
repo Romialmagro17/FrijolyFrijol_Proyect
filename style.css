@@ -1,0 +1,134 @@
+/* ---- PALETA DE COLORES "FRIJOL Y FRIJOL" ---- */
+:root {
+    --frijol-green-light: #9bf2a1;
+    --frijol-green-dark: #3ba846;
+    --frijol-brown: #5c3a21;
+    --frijol-yellow: #ffc107;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Fredoka One', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #444444;
+    background-color: #f7fbf7; /* Fondo sutilmente verdoso muy limpio */
+}
+
+.text-dark-brown {
+    color: var(--frijol-brown);
+}
+
+/* ---- NAVBAR ---- */
+.custom-navbar {
+    background-color: var(--frijol-brown) !important;
+}
+.brand-text {
+    color: var(--frijol-green-light) !important;
+    font-size: 1.4rem;
+}
+
+/* ---- SECCIÓN INICIO (HERO) ---- */
+.hero-section {
+    background: linear-gradient(135deg, #e3f9e5 0%, #bbf7be 100%);
+    min-height: 80vh;
+    border-bottom: 5px solid var(--frijol-green-light);
+}
+
+.main-logo {
+    max-height: 220px;
+    object-fit: contain;
+}
+
+.bg-hero-overlay {
+    background-color: rgba(255, 255, 255, 0.85);
+    border: 3px solid white;
+}
+
+/* ---- TARJETAS Y COMPONENTES ---- */
+.custom-card {
+    background-color: #ffffff;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 2px solid #eef7ee !important;
+}
+
+.custom-card:hover {
+    transform: translateY(-8px) scale(1.01);
+    box-shadow: 0 15px 30px rgba(59, 168, 70, 0.15) !important;
+}
+
+.card-img-style {
+    height: 240px;
+    object-fit: cover;
+}
+
+/* Colores personalizados para títulos de tarjetas */
+.text-warning-custom { color: #d98200; }
+.text-info-custom { color: #008494; }
+
+/* ---- FORMULARIO DE CONTACTO ---- */
+.form-container {
+    background: #ffffff;
+    border: 3px solid #e3f9e5 !important;
+}
+
+.form-control:focus {
+    border-color: var(--frijol-green-dark);
+    box-shadow: 0 0 0 0.25rem rgba(59, 168, 70, 0.25);
+}
+
+/* ---- FOOTER Y BOTONES DE REDES ---- */
+.footer-bg {
+    background-color: #311d10;
+    border-top: 6px solid var(--frijol-yellow);
+}
+
+.footer-link {
+    color: white !important;
+    font-weight: bold;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.footer-link:hover {
+    transform: scale(1.1);
+    opacity: 0.9;
+}
+
+/* Colores de botones del footer */
+.bg-youtube { background-color: #ff0000; }
+.bg-facebook { background-color: #1877f2; }
+.bg-instagram { background-gradient: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); background-color: #e1306c; }
+.bg-tiktok { background-color: #000000; }
+
+.custom-btn, .custom-submit-btn {
+    transition: transform 0.2s ease;
+}
+.custom-btn:hover, .custom-submit-btn:hover {
+    transform: scale(1.05);
+}
+
+/* ---- MEDIA QUERY OBLIGATORIA (Diseño Móvil) ---- */
+@media (max-width: 768px) {
+    .hero-section {
+        min-height: 60vh;
+        padding: 2rem 1rem !important;
+    }
+    
+    .main-logo {
+        max-height: 150px;
+    }
+    
+    .hero-section h1 {
+        font-size: 1.8rem;
+    }
+    
+    .custom-img {
+        margin-top: 1rem;
+        max-width: 85%;
+    }
+    
+    .display-5 {
+        font-size: 2rem;
+    }
+}
