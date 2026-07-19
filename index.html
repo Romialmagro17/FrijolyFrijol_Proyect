@@ -7,24 +7,25 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
-<body class="bg-light">
+<body>
 
-    <!-- BLOQUE: ENCABEZADO (BASE.HTML) -->
-    <header class="bg-dark text-white p-3 text-center">
-        <h1>Frijol y Frijol</h1>
-    </header>
+    <!-- NAVBAR MEJORADA -->
+    <nav class="navbar navbar-expand-lg custom-navbar mb-4">
+        <div class="container">
+            <a class="navbar-brand brand-text fw-bold" href="#">Frijol y Frijol</a>
+        </div>
+    </nav>
 
-    <div class="container my-5">
+    <div class="container my-4">
         <div class="row">
-            <!-- BLOQUE: CONTENIDO PRINCIPAL -->
             <div class="col-md-7">
-                <div class="card shadow-sm p-4 mb-4">
-                    <h3 class="h4 mb-3">Registro de Ideas</h3>
+                <!-- FORMULARIO -->
+                <div class="card p-4 mb-4 form-container shadow-sm">
+                    <h3 class="h4 text-dark-brown">Registro de Ideas</h3>
                     <form id="formulario-registro" class="needs-validation" novalidate>
                         <div class="mb-3">
                             <label for="nombre" class="form-label">Título del Juguete o Lugar</label>
                             <input type="text" class="form-control" id="nombre" required minlength="3">
-                            <div class="invalid-feedback">El título debe tener al menos 3 caracteres.</div>
                         </div>
                         <div class="mb-3">
                             <label for="categoria" class="form-label">Categoría</label>
@@ -33,23 +34,48 @@
                                 <option value="Trabajo">Trabajo</option>
                                 <option value="Personal">Personal</option>
                             </select>
-                            <div class="invalid-feedback">Debe seleccionar una categoría.</div>
                         </div>
-                        <button type="submit" class="btn btn-primary">Registrar</button>
+                        <button type="submit" class="btn btn-primary custom-btn">Registrar</button>
                     </form>
                 </div>
 
-                <h3 class="h4">Ideas Registradas</h3>
-                <span class="badge bg-dark rounded-pill px-3 py-2 mb-3">Total: <span id="contador-reg">0</span></span>
+                <!-- ALERTA DE ÉXITO -->
+                <div id="alerta-contenedor"></div>
+
+                <!-- SPINNER -->
+                <div id="spinner-carga" class="d-none text-center my-3">
+                    <div class="spinner-border text-success" role="status"></div>
+                </div>
+
+                <h3 class="h4 text-dark-brown">Ideas Registradas</h3>
+                <span class="badge bg-secondary mb-3">Total: <span id="contador-reg">0</span></span>
                 
-                <!-- BLOQUE: CONTENIDO DINÁMICO (RENDERIZADO POR JS) -->
                 <div id="contenedor-lista" class="row row-cols-1 g-3"></div>
             </div>
         </div>
     </div>
 
-    <!-- BLOQUE: PIE DE PÁGINA -->
-    <footer class="text-center mt-5 p-3">
+    <!-- BOTÓN PARA ABRIR MODAL -->
+    <div class="container mb-5">
+        <button type="button" class="btn btn-info text-white" data-bs-toggle="modal" data-bs-target="#infoModal">
+            Ver Instrucciones
+        </button>
+    </div>
+
+    <!-- MODAL -->
+    <div class="modal fade" id="infoModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Proyecto Integrador</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">Bienvenida al sistema de gestión de ideas de Frijol y Frijol.</div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer-bg text-center mt-5 p-4 text-white">
         <p>&copy; 2026 Proyecto Integrador</p>
     </footer>
 

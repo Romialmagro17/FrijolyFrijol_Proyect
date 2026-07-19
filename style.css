@@ -132,3 +132,26 @@ body {
         font-size: 2rem;
     }
 }
+/* ---- AJUSTES SEMANA 8 ---- */
+
+/* Integración de Navbar con tu branding */
+.custom-navbar {
+    background-color: var(--frijol-brown) !important;
+    border-bottom: 4px solid var(--frijol-green-light);
+}
+
+/* Ajuste del Spinner para que combine */
+.text-success {
+    color: var(--frijol-green-dark) !important;
+}
+
+/* Asegurar que las cards sigan tu estilo */
+.custom-card {
+    border-left: 5px solid var(--frijol-green-light) !important;
+}
+
+/* Asegurar botones */
+.btn-primary {
+    background-color: var(--frijol-green-dark) !important;
+    border-color: var(--frijol-green-dark) !important;
+}
