@@ -1,25 +1,33 @@
 {% extends "base.html" %}
-{% block title %}Módulo de Productos{% endblock %}
+
+{% block title %}Productos - Frijol y Frijol{% endblock %}
+
 {% block content %}
-<h2>Listado de Productos</h2>
-<table class="table table-striped mt-3">
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Nombre</th>
-            <th>Precio</th>
-            <th>Stock</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for p in productos %}
-        <tr>
-            <td>{{ p.id }}</td>
-            <td>{{ p.nombre }}</td>
-            <td>${{ p.precio }}</td>
-            <td>{{ p.stock }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+<div class="row">
+    <div class="col-12">
+        <h2 class="mb-4">🧸 Catálogo de Juguetes</h2>
+        <p class="text-muted">Listado generado dinámicamente para facilitar tu compra.</p>
+    </div>
+</div>
+
+<div class="row">
+    {% for producto in productos %}
+    <div class="col-md-4 mb-3">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body">
+                <!-- Filtro de Jinja2 para poner el nombre en mayúsculas -->
+                <h5 class="card-title">{{ producto.nombre | upper }}</h5>
+                <p class="card-text">Precio: <strong>${{ producto.precio }}</strong></p>
+                
+                <!-- Condicional if / else para el stock -->
+                {% if producto.stock > 0 %}
+                    <span class="badge bg-success">Disponible (Stock: {{ producto.stock }})</span>
+                {% else %}
+                    <span class="badge bg-danger">Agotado</span>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
 {% endblock %}

@@ -1,41 +1,115 @@
-from flask import Flask, render_template, request, redirect, url_for
-from flask_sqlalchemy import SQLAlchemy
-import os
+import sqlite3
+from flask import Flask, redirect, render_template, request, url_for
 
 app = Flask(__name__)
 
-# Configuración de la base de datos (se creará un archivo llamado ideas.db)
-basedir = os.path.abspath(os.path.dirname(__file__))
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'ideas.db')
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-db = SQLAlchemy(app)
+# Función para conectar a la base de datos de ideas
+def init_sqlite_db():
+  conn = sqlite3.connect('ideas.db')
+  conn.execute(
+      'CREATE TABLE IF NOT EXISTS ideas (id INTEGER PRIMARY KEY AUTOINCREMENT,'
+      ' nombre TEXT, categoria TEXT)'
+  )
+  conn.close()
 
-# Modelo de la base de datos
-class Idea(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    nombre = db.Column(db.String(100), nullable=False)
-    categoria = db.Column(db.String(50), nullable=False)
 
-# Crear la base de datos automáticamente
-with app.app_context():
-    db.create_all()
+init_sqlite_db()
+
 
 @app.route('/', methods=['GET', 'POST'])
-def home():
-    if request.method == 'POST':
-        nuevo_nombre = request.form.get('nombre')
-        nueva_categoria = request.form.get('categoria')
-        
-        # Guardar en la base de datos
-        nueva_idea = Idea(nombre=nuevo_nombre, categoria=nueva_categoria)
-        db.session.add(nueva_idea)
-        db.session.commit()
-        return redirect(url_for('home'))
+def index():
+  if request.method == 'POST':
+    nombre = request.form['nombre']
+    categoria = request.form['categoria']
 
-    # Leer todas las ideas de la base de datos
-    todas_las_ideas = Idea.query.all()
-    return render_template('index.html', ideas=todas_las_ideas)
+    conn = sqlite3.connect('ideas.db')
+    cursor = conn.cursor()
+    cursor.execute(
+        'INSERT INTO ideas (nombre, categoria) VALUES (?, ?)',
+        (nombre, categoria),
+    )
+    conn.commit()
+    conn.close()
+    return redirect(url_for('index'))
+
+  # Consultar ideas de la base de datos
+  conn = sqlite3.connect('ideas.db')
+  conn.row_factory = sqlite3.Row
+  cursor = conn.cursor()
+  cursor.execute('SELECT * FROM ideas')
+  ideas = cursor.fetchall()
+  conn.close()
+
+  return render_template('index.html', ideas=ideas)
+
+
+@app.route('/productos')
+def productos():
+  # Merchandising oficial de Frijol y Frijol
+  lista_productos = [
+      {'nombre': 'Camiseta Adulto Frijol y Frijol', 'precio': 15.00, 'stock': 20},
+      {'nombre': 'Camiseta Niño Frijol y Frijol', 'precio': 12.00, 'stock': 15},
+      {'nombre': 'Gorra Frijol y Frijol', 'precio': 9.50, 'stock': 8},
+      {
+          'nombre': 'Mochila Escolar Frijol y Frijol',
+          'precio': 25.00,
+          'stock': 0,
+      },
+  ]
+  return render_template('productos.html', productos=lista_productos)
+
+
+@app.route('/clientes')
+def clientes():
+  seguidores = [
+      {
+          'nombre': 'Carla Gómez',
+          'comentario': '¡Me encantan sus vlogs en familia!',
+          'vip': True,
+      },
+      {'nombre': 'Mateo Pérez', 'comentario': 'Saludos desde Quito', 'vip': False},
+      {
+          'nombre': 'Sofía Ruiz',
+          'comentario': 'El unboxing estuvo genial',
+          'vip': True,
+      },
+  ]
+  return render_template('clientes.html', clientes=seguidores)
+
+
+@app.route('/proveedores')
+def proveedores():
+  # Proveedores reales solicitados
+  aliados = [
+      {
+          'empresa': 'Mi Juguetería',
+          'pais': 'Ecuador',
+          'contacto': 'ventas@mijugueteria.ec',
+          'activo': True,
+      },
+      {
+          'empresa': 'Juguetón',
+          'pais': 'Ecuador',
+          'contacto': 'contacto@jugueton.com.ec',
+          'activo': True,
+      },
+  ]
+  return render_template('proveedores.html', proveedores=aliados)
+
+
+@app.route('/facturacion')
+def facturacion():
+  pedidos = [
+      {
+          'id_pedido': 'F-001',
+          'item': 'Camiseta Adulto Frijol y Frijol',
+          'total': 15.00,
+      },
+      {'id_pedido': 'F-002', 'item': 'Gorra Frijol y Frijol', 'total': 9.50},
+  ]
+  return render_template('facturacion.html', pedidos=pedidos)
+
 
 if __name__ == '__main__':
-    app.run(debug=True, port=8080)
+  app.run(debug=True)

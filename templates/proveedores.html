@@ -1,14 +1,28 @@
 {% extends "base.html" %}
-{% block title %}Módulo de Proveedores{% endblock %}
+
+{% block title %}Aliados - Frijol y Frijol{% endblock %}
+
 {% block content %}
-<h2>Listado de Proveedores</h2>
-<div class="row mt-3">
+<div class="row mb-4">
+    <div class="col-12">
+        <h2 class="mb-3">🤝 Proveedores y Aliados Estratégicos</h2>
+        <p class="text-muted">Canales de distribución y marcas aliadas.</p>
+    </div>
+</div>
+
+<div class="row">
     {% for prov in proveedores %}
     <div class="col-md-6 mb-3">
-        <div class="card">
+        <div class="card shadow-sm h-100">
             <div class="card-body">
-                <h5 class="card-title">{{ prov.empresa }}</h5>
-                <p class="card-text">Contacto: {{ prov.contacto }}</p>
+                <h5 class="card-title text-primary">{{ prov.empresa }}</h5>
+                <p class="card-text mb-1"><strong>País:</strong> {{ prov.pais }}</p>
+                <p class="card-text mb-3"><strong>Contacto:</strong> {{ prov.contacto }}</p>
+                {% if prov.activo %}
+                    <span class="badge bg-success">Alianza Activa</span>
+                {% else %}
+                    <span class="badge bg-secondary">En Negociación</span>
+                {% endif %}
             </div>
         </div>
     </div>
