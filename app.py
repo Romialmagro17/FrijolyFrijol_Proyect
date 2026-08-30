@@ -1,115 +1,80 @@
-import sqlite3
-from flask import Flask, redirect, render_template, request, url_for
+from flask import Flask, render_template, redirect, url_for, flash
+from forms.producto_form import ProductoForm
+from forms.cliente_form import ClienteForm
+from forms.proveedor_form import ProveedorForm
+from forms.facturacion_form import FacturacionForm
 
+# Inicializar la aplicación Flask
 app = Flask(__name__)
+app.config['SECRET_KEY'] = 'clave_secreta_para_csrf_12345'
 
+# Listas temporales en memoria
+PRODUCTOS = []
+CLIENTES = []
+PROVEEDORES = []
+FACTURAS = []
 
-# Función para conectar a la base de datos de ideas
-def init_sqlite_db():
-  conn = sqlite3.connect('ideas.db')
-  conn.execute(
-      'CREATE TABLE IF NOT EXISTS ideas (id INTEGER PRIMARY KEY AUTOINCREMENT,'
-      ' nombre TEXT, categoria TEXT)'
-  )
-  conn.close()
-
-
-init_sqlite_db()
-
-
-@app.route('/', methods=['GET', 'POST'])
+# --- RUTA PRINCIPAL ---
+@app.route('/')
 def index():
-  if request.method == 'POST':
-    nombre = request.form['nombre']
-    categoria = request.form['categoria']
+    return render_template('index.html')
 
-    conn = sqlite3.connect('ideas.db')
-    cursor = conn.cursor()
-    cursor.execute(
-        'INSERT INTO ideas (nombre, categoria) VALUES (?, ?)',
-        (nombre, categoria),
-    )
-    conn.commit()
-    conn.close()
-    return redirect(url_for('index'))
-
-  # Consultar ideas de la base de datos
-  conn = sqlite3.connect('ideas.db')
-  conn.row_factory = sqlite3.Row
-  cursor = conn.cursor()
-  cursor.execute('SELECT * FROM ideas')
-  ideas = cursor.fetchall()
-  conn.close()
-
-  return render_template('index.html', ideas=ideas)
-
-
+# --- MÓDULO PRODUCTOS ---
 @app.route('/productos')
 def productos():
-  # Merchandising oficial de Frijol y Frijol
-  lista_productos = [
-      {'nombre': 'Camiseta Adulto Frijol y Frijol', 'precio': 15.00, 'stock': 20},
-      {'nombre': 'Camiseta Niño Frijol y Frijol', 'precio': 12.00, 'stock': 15},
-      {'nombre': 'Gorra Frijol y Frijol', 'precio': 9.50, 'stock': 8},
-      {
-          'nombre': 'Mochila Escolar Frijol y Frijol',
-          'precio': 25.00,
-          'stock': 0,
-      },
-  ]
-  return render_template('productos.html', productos=lista_productos)
+    return render_template('productos.html', productos=PRODUCTOS)
 
+@app.route('/productos/nuevo', methods=['GET', 'POST'])
+def formulario_producto():
+    form = ProductoForm()
+    if form.validate_on_submit():
+        PRODUCTOS.append(form.data)
+        flash('Producto guardado exitosamente', 'success')
+        return redirect(url_for('productos'))
+    return render_template('formulario_producto.html', form=form)
 
+# --- MÓDULO CLIENTES ---
 @app.route('/clientes')
 def clientes():
-  seguidores = [
-      {
-          'nombre': 'Carla Gómez',
-          'comentario': '¡Me encantan sus vlogs en familia!',
-          'vip': True,
-      },
-      {'nombre': 'Mateo Pérez', 'comentario': 'Saludos desde Quito', 'vip': False},
-      {
-          'nombre': 'Sofía Ruiz',
-          'comentario': 'El unboxing estuvo genial',
-          'vip': True,
-      },
-  ]
-  return render_template('clientes.html', clientes=seguidores)
+    return render_template('clientes.html', clientes=CLIENTES)
 
+@app.route('/clientes/nuevo', methods=['GET', 'POST'])
+def formulario_cliente():
+    form = ClienteForm()
+    if form.validate_on_submit():
+        CLIENTES.append(form.data)
+        flash('Cliente registrado exitosamente', 'success')
+        return redirect(url_for('clientes'))
+    return render_template('formulario_cliente.html', form=form)
 
+# --- MÓDULO PROVEEDORES ---
 @app.route('/proveedores')
 def proveedores():
-  # Proveedores reales solicitados
-  aliados = [
-      {
-          'empresa': 'Mi Juguetería',
-          'pais': 'Ecuador',
-          'contacto': 'ventas@mijugueteria.ec',
-          'activo': True,
-      },
-      {
-          'empresa': 'Juguetón',
-          'pais': 'Ecuador',
-          'contacto': 'contacto@jugueton.com.ec',
-          'activo': True,
-      },
-  ]
-  return render_template('proveedores.html', proveedores=aliados)
+    return render_template('proveedores.html', proveedores=PROVEEDORES)
 
+@app.route('/proveedores/nuevo', methods=['GET', 'POST'])
+def formulario_proveedor():
+    form = ProveedorForm()
+    if form.validate_on_submit():
+        PROVEEDORES.append(form.data)
+        flash('Proveedor guardado exitosamente', 'success')
+        return redirect(url_for('proveedores'))
+    return render_template('formulario_proveedor.html', form=form)
 
+# --- MÓDULO FACTURACIÓN ---
 @app.route('/facturacion')
 def facturacion():
-  pedidos = [
-      {
-          'id_pedido': 'F-001',
-          'item': 'Camiseta Adulto Frijol y Frijol',
-          'total': 15.00,
-      },
-      {'id_pedido': 'F-002', 'item': 'Gorra Frijol y Frijol', 'total': 9.50},
-  ]
-  return render_template('facturacion.html', pedidos=pedidos)
+    return render_template('facturacion.html', facturas=FACTURAS)
 
+@app.route('/facturacion/nueva', methods=['GET', 'POST'])
+def formulario_facturacion():
+    form = FacturacionForm()
+    if form.validate_on_submit():
+        FACTURAS.append(form.data)
+        flash('Factura generada exitosamente', 'success')
+        return redirect(url_for('facturacion'))
+    return render_template('formulario_facturacion.html', form=form)
 
+# --- EJECUCIÓN DEL SERVIDOR ---
 if __name__ == '__main__':
-  app.run(debug=True)
+    app.run(debug=True)

@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Registrar Factura{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Nueva Factura</h2>
+    <form action="{{ url_for('formulario_facturacion') }}" method="POST" novalidate class="mt-3">
+        {{ form.hidden_tag() }}
+
+        <div class="mb-3">
+            {{ form.numero_factura.label(class="form-label") }}
+            {{ form.numero_factura(class="form-control " + ("is-invalid" if form.numero_factura.errors else "")) }}
+            {% for error in form.numero_factura.errors %}
+                <div class="invalid-feedback">{{ error }}</div>
+            {% endfor %}
+        </div>
+
+        <div class="mb-3">
+            {{ form.cliente.label(class="form-label") }}
+            {{ form.cliente(class="form-control " + ("is-invalid" if form.cliente.errors else "")) }}
+            {% for error in form.cliente.errors %}
+                <div class="invalid-feedback">{{ error }}</div>
+            {% endfor %}
+        </div>
+
+        <div class="mb-3">
+            {{ form.monto_total.label(class="form-label") }}
+            {{ form.monto_total(class="form-control " + ("is-invalid" if form.monto_total.errors else "")) }}
+            {% for error in form.monto_total.errors %}
+                <div class="invalid-feedback">{{ error }}</div>
+            {% endfor %}
+        </div>
+
+        <div class="mb-3">
+            {{ form.fecha.label(class="form-label") }}
+            {{ form.fecha(class="form-control " + ("is-invalid" if form.fecha.errors else ""), type="date") }}
+            {% for error in form.fecha.errors %}
+                <div class="invalid-feedback">{{ error }}</div>
+            {% endfor %}
+        </div>
+
+        {{ form.submit(class="btn btn-primary") }}
+        <a href="{{ url_for('facturacion') }}" class="btn btn-secondary">Cancelar</a>
+    </form>
+</div>
+{% endblock %}
