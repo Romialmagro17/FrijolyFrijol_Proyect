@@ -1,3 +1,5 @@
+import os
+import sqlite3
 from flask import Flask, render_template, redirect, url_for, flash
 from forms.producto_form import ProductoForm
 from forms.cliente_form import ClienteForm
@@ -8,8 +10,38 @@ from forms.facturacion_form import FacturacionForm
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'clave_secreta_para_csrf_12345'
 
-# Listas temporales en memoria
-PRODUCTOS = []
+# --- CONFIGURACIÓN DE LA BASE DE DATOS SQLITE ---
+DATA_FOLDER = os.path.join(app.root_path, 'data')
+if not os.path.exists(DATA_FOLDER):
+    os.makedirs(DATA_FOLDER)
+
+DB_PATH = os.path.join(DATA_FOLDER, 'ferreteria.db')
+
+def dict_factory(cursor, row):
+    """Convierte las filas de SQLite en diccionarios para usar notación de punto en Jinja2."""
+    fields = [column[0] for column in cursor.description]
+    return {key: value for key, value in zip(fields, row)}
+
+def init_db():
+    """Inicializa la base de datos y crea la tabla de productos si no existe."""
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS productos (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            nombre TEXT NOT NULL,
+            precio REAL NOT NULL,
+            stock INTEGER NOT NULL,
+            descripcion TEXT
+        )
+    ''')
+    conn.commit()
+    conn.close()
+
+# Ejecutar la inicialización de la base de datos al arrancar la app
+init_db()
+
+# Listas temporales restantes
 CLIENTES = []
 PROVEEDORES = []
 FACTURAS = []
@@ -19,16 +51,34 @@ FACTURAS = []
 def index():
     return render_template('index.html')
 
-# --- MÓDULO PRODUCTOS ---
+# --- MÓDULO PRODUCTOS (Con persistencia SQLite) ---
 @app.route('/productos')
 def productos():
-    return render_template('productos.html', productos=PRODUCTOS)
+    conn = sqlite3.connect(DB_PATH)
+    conn.row_factory = dict_factory
+    cursor = conn.cursor()
+    cursor.execute('SELECT id, nombre, precio, stock, descripcion FROM productos')
+    productos_db = cursor.fetchall()
+    conn.close()
+    return render_template('productos.html', productos=productos_db)
 
 @app.route('/productos/nuevo', methods=['GET', 'POST'])
 def formulario_producto():
     form = ProductoForm()
     if form.validate_on_submit():
-        PRODUCTOS.append(form.data)
+        nombre = form.nombre.data
+        precio = float(form.precio.data) if form.precio.data is not None else 0.0
+        stock = int(form.stock.data) if form.stock.data is not None else 0
+        
+        conn = sqlite3.connect(DB_PATH)
+        cursor = conn.cursor()
+        cursor.execute('''
+            INSERT INTO productos (nombre, precio, stock, descripcion)
+            VALUES (?, ?, ?, ?)
+        ''', (nombre, precio, stock, 'Sin descripción'))
+        conn.commit()
+        conn.close()
+        
         flash('Producto guardado exitosamente', 'success')
         return redirect(url_for('productos'))
     return render_template('formulario_producto.html', form=form)
