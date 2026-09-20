@@ -1,20 +1,29 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4 shadow-sm">
-    <div class="container-fluid">
-        <a class="navbar-brand d-flex align-items-center fw-bold" href="{{ url_for('index') }}">
-            <img src="https://yt3.googleusercontent.com/P3i7sg-KeiKd9RmOhjOLNDeyvhcnwxDSMk9ER-fr0PMQDDPG-jW4Mebz5hZpSAzSPM6poQmlyf0=s160-c-k-c0x00ffffff-no-rj" alt="Frijol y Frijol" width="35" height="35" class="rounded-circle me-2 object-fit-cover">
-            Frijol y Frijol
-        </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item"><a class="nav-link" href="{{ url_for('index') }}">Inicio</a></li>
-                <li class="nav-item"><a class="nav-link" href="{{ url_for('productos') }}">Productos</a></li>
-                <li class="nav-item"><a class="nav-link" href="{{ url_for('clientes') }}">Comunidad</a></li>
-                <li class="nav-item"><a class="nav-link" href="{{ url_for('proveedores') }}">Aliados</a></li>
-                <li class="nav-item"><a class="nav-link" href="{{ url_for('facturacion') }}">Pedidos</a></li>
-            </ul>
-        </div>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="{{ url_for('index') }}">Frijol y Frijol</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('index') }}">Inicio</a></li>
+        {% if current_user.is_authenticated %}
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('dashboard') }}">Dashboard</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('productos') }}">Productos</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('clientes') }}">Clientes</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('proveedores') }}">Proveedores</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('facturacion') }}">Facturación</a></li>
+        {% endif %}
+      </ul>
+      <ul class="navbar-nav ms-auto">
+        {% if current_user.is_authenticated %}
+          <li class="nav-item"><span class="nav-link text-info">👤 {{ current_user.usuario }}</span></li>
+          <li class="nav-item"><a class="nav-link btn btn-outline-danger btn-sm text-white ms-2 px-3" href="{{ url_for('logout') }}">Cerrar Sesión</a></li>
+        {% else %}
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('login') }}">Iniciar Sesión</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('registro') }}">Registrarse</a></li>
+        {% endif %}
+      </ul>
     </div>
+  </div>
 </nav>

@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-5">
+    <div class="jumbotron bg-light p-5 rounded shadow">
+        <h1 class="display-4">¡Bienvenido, {{ current_user.usuario }}!</h1>
+        <p class="lead">Has accedido correctamente al panel de administración del sistema Frijol y Frijol.</p>
+        <hr class="my-4">
+        <p>Utiliza la barra de navegación superior para gestionar Productos, Clientes, Proveedores y Facturación.</p>
+        <a class="btn btn-danger btn-lg" href="{{ url_for('logout') }}" role="button">Cerrar Sesión</a>
+    </div>
+</div>
+{% endblock %}
