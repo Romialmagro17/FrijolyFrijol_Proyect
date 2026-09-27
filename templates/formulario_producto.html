@@ -36,3 +36,12 @@
     </form>
 </div>
 {% endblock %}
+
+<div class="mb-3">
+    <label for="id_proveedor" class="form-label">Proveedor</label>
+    <select class="form-control" name="id_proveedor" id="id_proveedor" required>
+        {% for prov in proveedores %}
+            <option value="{{ prov.id_proveedor }}">{{ prov.nombre }}</option>
+        {% endfor %}
+    </select>
+</div>
