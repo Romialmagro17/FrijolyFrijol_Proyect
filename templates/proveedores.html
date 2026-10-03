@@ -1,34 +1,25 @@
-@app.route('/productos/nuevo', methods=['GET', 'POST'])
-@login_required
-def formulario_producto():
-    conexion = obtener_conexion()
-    cursor = conexion.cursor()
-    
-    if request.method == 'POST':
-        nombre = request.form.get('nombre')
-        precio = float(request.form.get('precio')) if request.form.get('precio') else 0.0
-        stock = int(request.form.get('stock')) if request.form.get('stock') else 0
-        descripcion = request.form.get('descripcion', 'Sin descripción')
-        id_proveedor = request.form.get('id_proveedor') # Capturamos el proveedor seleccionado
-        
-        cursor.execute(
-            """
-            INSERT INTO productos (nombre, precio, stock, descripcion, id_proveedor)
-            VALUES (%s, %s, %s, %s, %s)
-            """,
-            (nombre, precio, stock, descripcion, id_proveedor)
-        )
-        conexion.commit()
-        cursor.close()
-        conexion.close()
-        
-        flash('Producto guardado exitosamente', 'success')
-        return redirect(url_for('productos'))
-    
-    # Obtenemos la lista de proveedores para mostrarlos en un <select> del formulario
-    cursor.execute("SELECT id_proveedor, nombre FROM proveedores")
-    proveedores_db = cursor.fetchall()
-    cursor.close()
-    conexion.close()
-    
-    return render_template('formulario_producto.html', form=ProductoForm(), proveedores=proveedores_db)
+{% extends "base.html" %}
+{% block title %}Proveedores - Frijol y Frijol{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h2 class="mb-4">📦 Listado de Proveedores</h2>
+        <a href="{{ url_for('formulario_proveedor') }}" class="btn btn-primary mb-3">Registrar Nuevo Proveedor</a>
+    </div>
+</div>
+
+<div class="row">
+    {% for proveedor in proveedores %}
+    <div class="col-md-4 mb-3">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title">{{ proveedor.nombre | upper }}</h5>
+                <p class="card-text">Teléfono: {{ proveedor.telefono }}</p>
+                <p class="card-text">Email: {{ proveedor.email }}</p>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

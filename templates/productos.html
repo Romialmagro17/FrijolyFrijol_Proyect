@@ -1,21 +1,26 @@
-# --- MÓDULO PRODUCTOS (Con JOIN obligatorio a Proveedores) ---
-@app.route('/productos')
-@login_required
-def productos():
-    conexion = obtener_conexion()
-    productos_db = []
-    if conexion:
-        try:
-            cursor = conexion.cursor()
-            # Consulta JOIN entre productos y proveedores
-            cursor.execute('''
-                SELECT p.id_producto, p.nombre, p.precio, p.stock, p.descripcion, pr.nombre AS proveedor_nombre
-                FROM productos p
-                JOIN proveedores pr ON p.id_proveedor = pr.id_proveedor
-            ''')
-            productos_db = cursor.fetchall()
-            cursor.close()
-            conexion.close()
-        except Exception as e:
-            flash(f'Error al cargar productos: {e}', 'danger')
-    return render_template('productos.html', productos=productos_db)
+{% extends "base.html" %}
+{% block title %}Productos - Frijol y Frijol{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h2 class="mb-4">🧸 Catálogo de Productos</h2>
+        <a href="{{ url_for('formulario_producto') }}" class="btn btn-primary mb-3">Registrar Nuevo Producto</a>
+    </div>
+</div>
+
+<div class="row">
+    {% for producto in productos %}
+    <div class="col-md-4 mb-3">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title">{{ producto.nombre | upper }}</h5>
+                <p class="card-text">Precio: <strong>${{ producto.precio }}</strong></p>
+                <p class="card-text">Stock: {{ producto.stock }}</p>
+                <p class="card-text">Descripción: {{ producto.descripcion }}</p>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

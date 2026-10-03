@@ -13,7 +13,12 @@
                     </div>
                     <div class="mb-3">
                         {{ form.password.label(class="form-label") }}
-                        {{ form.password(class="form-control") }}
+                        <div class="input-group">
+                            {{ form.password(class="form-control", id="passwordLogin") }}
+                            <button class="btn btn-outline-secondary" type="button" id="toggleLoginPassword">
+                                👁️
+                            </button>
+                        </div>
                     </div>
                     <div class="d-grid">
                         {{ form.submit(class="btn btn-primary") }}
@@ -26,4 +31,15 @@
         </div>
     </div>
 </div>
+
+<script>
+    const toggleLoginBtn = document.querySelector('#toggleLoginPassword');
+    const passwordLoginInput = document.querySelector('#passwordLogin');
+
+    toggleLoginBtn.addEventListener('click', function () {
+        const type = passwordLoginInput.getAttribute('type') === 'password' ? 'text' : 'password';
+        passwordLoginInput.setAttribute('type', type);
+        this.textContent = type === 'password' ? '👁️' : '🔒';
+    });
+</script>
 {% endblock %}

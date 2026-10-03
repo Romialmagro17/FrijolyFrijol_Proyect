@@ -9,11 +9,11 @@ class User(UserMixin):
 def load_user(user_id):
     conexion = obtener_conexion()
     if conexion:
-        cursor = conexion.cursor(dictionary=True)
+        cursor = conexion.cursor()
         cursor.execute("SELECT id, usuario FROM usuarios WHERE id = %s", (user_id,))
-        user_data = cursor.fetchone()
+        row = cursor.fetchone()
         cursor.close()
         conexion.close()
-        if user_data:
-            return User(user_data['id'], user_data['usuario'])
+        if row:
+            return User(row[0], row[1]) # <-- row[0] es el id, row[1] es el usuario
     return None
